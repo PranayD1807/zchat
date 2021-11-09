@@ -1,76 +1,98 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:zchat/widgets/chat/messages.dart';
+import 'package:zchat/widgets/chat/new_message.dart';
+import 'package:zchat/widgets/drawer.dart';
 
 class ChatScreen extends StatelessWidget {
+  final String user2;
+  final String uImageUrl;
+  final String uName;
+  ChatScreen(
+      {required this.user2, required this.uImageUrl, required this.uName});
   @override
   Widget build(BuildContext context) {
+    final cUser = FirebaseAuth.instance.currentUser!.uid;
+    void _clearChat() async {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(cUser)
+          .collection('chats')
+          .doc(user2)
+          .collection('messages')
+          .get()
+          .then((snapshot) {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          doc.reference.delete();
+        }
+      });
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user2)
+          .collection('chats')
+          .doc(cUser)
+          .collection('messages')
+          .get()
+          .then((snapshot) {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          doc.reference.delete();
+        }
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Z-Chat'),
-        actions: [
-          DropdownButton(
-            icon: const Icon(
-              Icons.more_vert,
-              color: Colors.white,
-            ),
-            items: [
-              DropdownMenuItem(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.min,
-                  children: const <Widget>[
-                    Icon(
-                      Icons.exit_to_app,
-                      color: Colors.brown,
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Text('Logout')
-                  ],
-                ),
-                value: 'logout',
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircleAvatar(
+              radius: 20,
+              backgroundColor: Colors.white,
+              child: CircleAvatar(
+                radius: 18,
+                backgroundImage: NetworkImage(uImageUrl),
               ),
-            ],
-            onChanged: (itemIdentifier) {
-              if (itemIdentifier == 'logout') {
-                FirebaseAuth.instance.signOut();
-              }
-            },
-          ),
+            ),
+            const SizedBox(
+              width: 30,
+            ),
+            Text(uName),
+          ],
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: IconButton(
+              onPressed: () {
+                _clearChat();
+              },
+              icon: const Icon(
+                Icons.clear_all,
+                size: 35,
+              ),
+            ),
+          )
         ],
       ),
-      body: StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('chats/D2tm5J49JQvdIrn9yE43/messages')
-            .snapshots(),
-        builder: (ctx,
-            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> streamSnapshot) {
-          if (streamSnapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          final documents = streamSnapshot.data?.docs;
-          return ListView.builder(
-            itemCount: documents!.length,
-            itemBuilder: (ctx, index) => Container(
-              padding: const EdgeInsets.all(8),
-              child: Text(documents[index]['text']),
+      // ignore: avoid_unnecessary_containers
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage(
+                'https://www.ixpap.com/images/2021/02/chocolate-wallpaper-ixpap-10.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: Messages(user2),
             ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          FirebaseFirestore.instance
-              .collection('chats/D2tm5J49JQvdIrn9yE43/messages')
-              .add(
-            {'text': 'This was added by clicking the button!'},
-          );
-        },
+            NewMessage(user2: user2),
+          ],
+        ),
       ),
     );
   }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:zchat/widgets/pickers/user_image_picker.dart';
+import 'dart:io';
 
 class AuthForm extends StatefulWidget {
   final bool isLoading;
   const AuthForm(this.submitFn, this.isLoading);
   final void Function(String email, String password, String username,
-      bool isLogin, BuildContext ctx) submitFn;
+      File image, bool isLogin, BuildContext ctx) submitFn;
   @override
   _AuthFormState createState() => _AuthFormState();
 }
@@ -15,16 +17,31 @@ class _AuthFormState extends State<AuthForm> {
   var _userEmail = '';
   var _userName = '';
   var _userPassword = '';
+  var _userImageFile = File('');
+
+  void _pickedImage(File image) {
+    _userImageFile = image;
+  }
 
   void _trySubmit() {
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
+    if (_userImageFile == File('') && !_isLogin) {
+      var message = ' No Image found';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+        ),
+      );
+      return;
+    }
     if (isValid) {
       _formKey.currentState!.save();
       widget.submitFn(
         _userEmail.trim(),
         _userPassword.trim(),
         _userName.trim(),
+        _userImageFile,
         _isLogin,
         context,
       );
@@ -45,6 +62,7 @@ class _AuthFormState extends State<AuthForm> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
+                  if (!_isLogin) UserImagePicker(_pickedImage),
                   TextFormField(
                     key: const ValueKey('email'),
                     keyboardType: TextInputType.emailAddress,
@@ -66,7 +84,9 @@ class _AuthFormState extends State<AuthForm> {
                       key: const ValueKey('username'),
                       decoration: const InputDecoration(labelText: 'Username'),
                       validator: (value) {
-                        if (value!.isEmpty || value.length < 4) {
+                        if (value!.isEmpty ||
+                            value.length < 4 ||
+                            value.length > 20) {
                           return 'Please enter at least 4 characters';
                         }
                         return null;
