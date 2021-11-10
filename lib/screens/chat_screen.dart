@@ -43,56 +43,57 @@ class ChatScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircleAvatar(
-              radius: 20,
-              backgroundColor: Colors.white,
-              child: CircleAvatar(
-                radius: 18,
-                backgroundImage: NetworkImage(uImageUrl),
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            expandedHeight: 300,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              // titlePadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+              centerTitle: true,
+              title: Text(
+                uName,
+              ),
+              background: Image(
+                fit: BoxFit.cover,
+                image: NetworkImage(uImageUrl),
               ),
             ),
-            const SizedBox(
-              width: 30,
-            ),
-            Text(uName),
-          ],
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: IconButton(
-              onPressed: () {
-                _clearChat();
-              },
-              icon: const Icon(
-                Icons.clear_all,
-                size: 35,
-              ),
-            ),
-          )
-        ],
-      ),
-      // ignore: avoid_unnecessary_containers
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage(
-                'https://www.ixpap.com/images/2021/02/chocolate-wallpaper-ixpap-10.jpg'),
-            fit: BoxFit.cover,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: IconButton(
+                  onPressed: () {
+                    _clearChat();
+                  },
+                  icon: const Icon(
+                    Icons.delete_sweep,
+                    size: 35,
+                  ),
+                ),
+              )
+            ],
           ),
-        ),
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: Messages(user2),
+          SliverFillRemaining(
+            child: Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('lib/images/img2.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              // padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    child: Messages(user2),
+                  ),
+                  NewMessage(user2: user2),
+                ],
+              ),
             ),
-            NewMessage(user2: user2),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

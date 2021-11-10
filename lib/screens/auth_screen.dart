@@ -16,6 +16,7 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   final _auth = FirebaseAuth.instance;
   var _isLoading = false;
+
   void _submitAuthForm(
     String email,
     String password,
@@ -34,7 +35,12 @@ class _AuthScreenState extends State<AuthScreen> {
         _authResult = await _auth.signInWithEmailAndPassword(
             email: email, password: password);
       } else {
-        if (image == File('')) {
+        if (image == File('abc.txt')) {
+          ScaffoldMessenger.of(ctx).showSnackBar(
+            const SnackBar(
+              content: Text('Please upload a image.'),
+            ),
+          );
           return;
         }
         _authResult = await _auth.createUserWithEmailAndPassword(
@@ -71,7 +77,6 @@ class _AuthScreenState extends State<AuthScreen> {
         _isLoading = false;
       });
     } catch (err) {
-      print(err);
       var message = err.toString();
       ScaffoldMessenger.of(ctx).showSnackBar(
         SnackBar(
@@ -94,8 +99,7 @@ class _AuthScreenState extends State<AuthScreen> {
             image: DecorationImage(
               fit: BoxFit.fitHeight,
               alignment: Alignment.centerLeft,
-              image: NetworkImage(
-                  'https://img.wallpapersafari.com/desktop/1600/900/19/59/Pphai1.jpg'),
+              image: AssetImage('lib/images/img1.jpg'),
             ),
           ),
           child: AuthForm(_submitAuthForm, _isLoading)),

@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
@@ -31,15 +33,22 @@ class _ContactsScreenState extends State<ContactsScreen> {
       final userdata =
           user.docs.firstWhere((element) => element['email'] == email);
 
-      setState(() {
-        userName = userdata['username'];
-        userPic = userdata['image_url'];
-        userEmail = userdata['email'];
-        userId = userdata.id;
-      });
+      final cUser = FirebaseAuth.instance.currentUser!.uid;
+      if (cUser == userdata.id) {
+        setState(() {
+          userName = 'error2';
+        });
+      } else {
+        setState(() {
+          userName = userdata['username'];
+          userPic = userdata['image_url'];
+          userEmail = userdata['email'];
+          userId = userdata.id;
+        });
+      }
     } catch (e) {
       setState(() {
-        userName = 'No user Found';
+        userName = 'error1';
       });
     }
   }
@@ -57,8 +66,9 @@ class _ContactsScreenState extends State<ContactsScreen> {
       axisAlignment: isPortrait ? 0.0 : -1.0,
       openAxisAlignment: 0.0,
       width: isPortrait ? 600 : 500,
-      debounceDelay: const Duration(milliseconds: 500),
+      // debounceDelay: const Duration(milliseconds: 1000),
       onSubmitted: getUser,
+      // onQueryChanged: getUser,
 
       // Specify a custom transition to be used for
       // animating between opened and closed stated.
@@ -75,15 +85,15 @@ class _ContactsScreenState extends State<ContactsScreen> {
             color: Colors.white,
             elevation: 4.0,
             child: SizedBox(
-              height: 150,
-              child: ListView.builder(
-                itemCount: 1,
-                itemBuilder: (ctx, i) {
-                  return Container(
-                    child: userName != ''
-                        ? Container(
-                            child: userName == 'No user Found'
-                                ? Center(child: Text('No user Found'))
+              height: 100,
+              child: Container(
+                child: userName != ''
+                    ? Container(
+                        child: userName == 'error1'
+                            ? const Center(child: Text('No user Found'))
+                            : userName == 'error2'
+                                ? const Center(
+                                    child: Text('You can not add yourself'))
                                 : Center(
                                     child: UserPreview(
                                       u2email: userEmail,
@@ -92,15 +102,13 @@ class _ContactsScreenState extends State<ContactsScreen> {
                                       user2Id: userId,
                                     ),
                                   ),
-                          )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const <Widget>[
-                              CircularProgressIndicator(),
-                            ],
-                          ),
-                  );
-                },
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const <Widget>[
+                          CircularProgressIndicator(),
+                        ],
+                      ),
               ),
             ),
           ),
@@ -116,12 +124,11 @@ class _ContactsScreenState extends State<ContactsScreen> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage(
-                'https://www.ixpap.com/images/2021/02/chocolate-wallpaper-ixpap-10.jpg'),
+            image: AssetImage('lib/images/img3.jpg'),
             fit: BoxFit.cover,
           ),
         ),
-        padding: EdgeInsets.symmetric(horizontal: 8),
+        // padding: EdgeInsets.symmetric(horizontal: 8),
         child: Stack(
           fit: StackFit.expand,
           children: [

@@ -14,11 +14,18 @@ class _NewMessageState extends State<NewMessage> {
   final _controller = TextEditingController();
   var _enteredMessage = '';
   void _sendMessage() async {
+    if (_enteredMessage == '') {
+      return;
+    }
     FocusScope.of(context).unfocus();
     final user = await FirebaseAuth.instance.currentUser;
-    final userData = await FirebaseFirestore.instance
+    final user1Data = await FirebaseFirestore.instance
         .collection('users')
         .doc(user!.uid)
+        .get();
+    final user2Data = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.user2)
         .get();
     try {
       FirebaseFirestore.instance
@@ -32,9 +39,20 @@ class _NewMessageState extends State<NewMessage> {
           'text': _enteredMessage,
           'createdAt': Timestamp.now(),
           'userId': user.uid,
-          'userImage': userData['image_url'],
+          'userImage': user1Data['image_url'],
         },
       );
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('chats')
+          .doc(widget.user2)
+          .update({
+        'email': user2Data['email'],
+        'image_url': user2Data['image_url'],
+        'username': user2Data['username'],
+        'timestamp': Timestamp.now(),
+      });
       FirebaseFirestore.instance
           .collection('users')
           .doc(widget.user2)
@@ -46,9 +64,20 @@ class _NewMessageState extends State<NewMessage> {
           'text': _enteredMessage,
           'createdAt': Timestamp.now(),
           'userId': user.uid,
-          'userImage': userData['image_url'],
+          'userImage': user1Data['image_url'],
         },
       );
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.user2)
+          .collection('chats')
+          .doc(user.uid)
+          .update({
+        'email': user1Data['email'],
+        'image_url': user1Data['image_url'],
+        'username': user1Data['username'],
+        'timestamp': Timestamp.now(),
+      });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -65,9 +94,14 @@ class _NewMessageState extends State<NewMessage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.brown[400],
-      margin: const EdgeInsets.only(top: 8),
+      margin: const EdgeInsets.only(
+        top: 8,
+      ),
       padding: const EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: Colors.brown[400],
+      ),
       child: Row(
         children: <Widget>[
           IconButton(

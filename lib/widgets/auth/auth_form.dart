@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zchat/widgets/pickers/user_image_picker.dart';
 import 'dart:io';
+import 'dart:convert';
 
 class AuthForm extends StatefulWidget {
   final bool isLoading;
@@ -12,21 +13,28 @@ class AuthForm extends StatefulWidget {
 }
 
 class _AuthFormState extends State<AuthForm> {
+  static const url =
+      'https://i0.wp.com/transitionofthoughts.com/wp-content/uploads/2014/08/blank.jpg';
+
   final _formKey = GlobalKey<FormState>();
   var _isLogin = true;
   var _userEmail = '';
   var _userName = '';
   var _userPassword = '';
-  var _userImageFile = File('');
 
+  var _userImageFile = File('');
+  bool _imagePicked = false;
   void _pickedImage(File image) {
     _userImageFile = image;
+    setState(() {
+      _imagePicked = true;
+    });
   }
 
   void _trySubmit() {
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
-    if (_userImageFile == File('') && !_isLogin) {
+    if (_imagePicked == false && !_isLogin) {
       var message = ' No Image found';
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

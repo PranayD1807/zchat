@@ -15,11 +15,26 @@ class _ContactsState extends State<Contacts> {
 
   @override
   Widget build(BuildContext context) {
+    void _deleteFriend(String uid) async {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(cUser)
+          .collection('chats')
+          .doc(uid)
+          .delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Contact deleted from your list.'),
+        ),
+      );
+    }
+
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('users')
           .doc(cUser)
           .collection('chats')
+          .orderBy('timestamp', descending: true)
           .snapshots(),
       builder:
           (ctx, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
@@ -35,12 +50,13 @@ class _ContactsState extends State<Contacts> {
         }
         final userDocs = snapshot.data!.docs;
         return Padding(
-          padding: const EdgeInsets.only(top: 70),
+          padding: const EdgeInsets.only(top: 70, left: 8, right: 8),
           child: ListView.builder(
             itemCount: userDocs.length,
             itemBuilder: (ctx, i) => Card(
               child: ListTile(
                 leading: CircleAvatar(
+                  radius: 30,
                   backgroundImage: NetworkImage(userDocs[i]['image_url']),
                 ),
                 title: Text(userDocs[i]['username']),
@@ -56,6 +72,14 @@ class _ContactsState extends State<Contacts> {
                     ),
                   );
                 },
+                trailing: IconButton(
+                  onPressed: () {
+                    _deleteFriend(userDocs[i].id);
+                  },
+                  icon: const Icon(
+                    Icons.delete,
+                  ),
+                ),
               ),
             ),
           ),

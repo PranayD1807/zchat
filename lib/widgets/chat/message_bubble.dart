@@ -44,8 +44,8 @@ class MessageBubble extends StatelessWidget {
           // width: 140,
 
           padding: const EdgeInsets.symmetric(
-            vertical: 10,
-            horizontal: 15,
+            vertical: 8,
+            horizontal: 13,
           ),
           margin: const EdgeInsets.symmetric(
             vertical: 4,
@@ -57,6 +57,7 @@ class MessageBubble extends StatelessWidget {
           child: Text(
             message,
             style: TextStyle(
+              fontSize: 18,
               color: !isMe
                   ? Colors.brown[800]
                   : Theme.of(context).accentTextTheme.headline1!.color,

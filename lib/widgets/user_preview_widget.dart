@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:zchat/screens/chat_screen.dart';
 
 class UserPreview extends StatelessWidget {
   UserPreview(
@@ -20,6 +21,9 @@ class UserPreview extends StatelessWidget {
           .collection('users')
           .doc(user!.uid)
           .get();
+      if (user.uid == user2Id) {
+        return;
+      }
       try {
         await FirebaseFirestore.instance
             .collection('users')
@@ -30,6 +34,7 @@ class UserPreview extends StatelessWidget {
           'email': u2email,
           'image_url': u2image,
           'username': u2username,
+          'timestamp': Timestamp.now(),
         });
 
         await FirebaseFirestore.instance
@@ -41,7 +46,14 @@ class UserPreview extends StatelessWidget {
           'email': user1Data['email'],
           'image_url': user1Data['image_url'],
           'username': user1Data['username'],
+          'timestamp': Timestamp.now(),
         });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Added as a friend.'),
+          ),
+        );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
