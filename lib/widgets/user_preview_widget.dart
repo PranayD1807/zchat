@@ -74,7 +74,7 @@ class UserPreview extends StatelessWidget {
           _addFriend(user2Id);
         },
         icon: const Icon(
-          Icons.message,
+          Icons.person_add,
           size: 30,
         ),
       ),

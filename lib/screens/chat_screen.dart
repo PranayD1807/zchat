@@ -48,6 +48,9 @@ class ChatScreen extends StatelessWidget {
           SliverAppBar(
             expandedHeight: 300,
             pinned: true,
+            // floating: true,
+            // snap: true,
+            // stretch: true,
             flexibleSpace: FlexibleSpaceBar(
               // titlePadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
               centerTitle: true,

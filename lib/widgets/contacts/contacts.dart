@@ -22,6 +22,13 @@ class _ContactsState extends State<Contacts> {
           .collection('chats')
           .doc(uid)
           .delete();
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('chats')
+          .doc(cUser)
+          .delete();
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Contact deleted from your list.'),

@@ -35,9 +35,11 @@ class Messages extends StatelessWidget {
           reverse: true,
           itemCount: chatDocs.length,
           itemBuilder: (ctx, i) => MessageBubble(
-            chatDocs[i]['text'],
-            chatDocs[i]['userImage'],
-            chatDocs[i]['userId'] == uid ? true : false,
+            message: chatDocs[i]['text'],
+            userImage: chatDocs[i]['userImage'],
+            isMe: chatDocs[i]['userId'] == uid ? true : false,
+            msgImageUrl: chatDocs[i]['msgImgUrl'],
+            isImage: chatDocs[i]['isImg'],
             key: ValueKey(
               chatDocs[i].id,
             ),
