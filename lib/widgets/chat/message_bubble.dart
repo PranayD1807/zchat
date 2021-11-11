@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:progressive_image/progressive_image.dart';
+import 'package:zchat/screens/image_screen.dart';
 
 class MessageBubble extends StatelessWidget {
   final String message;
@@ -21,7 +23,8 @@ class MessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment:
+          isImage ? CrossAxisAlignment.end : CrossAxisAlignment.center,
       children: <Widget>[
         if (!isMe)
           CircleAvatar(
@@ -35,24 +38,39 @@ class MessageBubble extends StatelessWidget {
             ),
           ),
         isImage
-            ? Container(
-                clipBehavior: Clip.antiAlias,
-                margin: const EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 8,
-                ),
-                constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 0.4),
-                decoration: BoxDecoration(
-                  border: Border.all(width: 2, color: Colors.white),
-                  borderRadius: BorderRadius.circular(10),
-                ),
+            ? TextButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (ctx) => ImageDetail(msgImageUrl),
+                    ),
+                  );
+                },
                 child: Container(
+                  clipBehavior: Clip.antiAlias,
+                  constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.6,
+                      maxHeight: MediaQuery.of(context).size.height * 0.3),
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 2, color: Colors.white),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Container(
                     clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
+                      color: Colors.brown,
                     ),
-                    child: Image(image: NetworkImage(msgImageUrl))),
+                    child: FadeInImage(
+                      fit: BoxFit.cover,
+                      placeholder:
+                          const AssetImage('lib/images/placeholder.jpg'),
+                      image: NetworkImage(msgImageUrl),
+                      fadeInDuration: const Duration(milliseconds: 300),
+                      fadeOutDuration: const Duration(milliseconds: 100),
+                    ),
+                  ),
+                ),
               )
             : Container(
                 decoration: BoxDecoration(

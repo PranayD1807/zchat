@@ -80,7 +80,7 @@ class _ChatImgPickerState extends State<ChatImgPicker> {
                       onPressed: () {
                         _imgFromGallery();
                         Navigator.of(context).pop();
-                      }),
+                      },),
                 ),
               ],
             ),

@@ -68,7 +68,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
       width: isPortrait ? 600 : 500,
       // debounceDelay: const Duration(milliseconds: 1000),
       onSubmitted: getUser,
-      // onQueryChanged: getUser,
+      onQueryChanged: getUser,
 
       // Specify a custom transition to be used for
       // animating between opened and closed stated.

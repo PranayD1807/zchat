@@ -42,17 +42,18 @@ class ChatScreen extends StatelessWidget {
       });
     }
 
+    const double expandedHeight = 300;
+    const double collapsedHeight = 0;
+    final _scrollController =
+        ScrollController(initialScrollOffset: expandedHeight - collapsedHeight);
     return Scaffold(
       body: CustomScrollView(
+        controller: _scrollController,
         slivers: <Widget>[
           SliverAppBar(
             expandedHeight: 300,
             pinned: true,
-            // floating: true,
-            // snap: true,
-            // stretch: true,
             flexibleSpace: FlexibleSpaceBar(
-              // titlePadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
               centerTitle: true,
               title: Text(
                 uName,

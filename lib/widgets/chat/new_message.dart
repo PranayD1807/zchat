@@ -28,6 +28,9 @@ class _NewMessageState extends State<NewMessage> {
   }
 
   void _sendImgMsg() async {
+    setState(() {
+      _sendingImg = false;
+    });
     final user = await FirebaseAuth.instance.currentUser;
     final user1Data = await FirebaseFirestore.instance
         .collection('users')
@@ -120,6 +123,8 @@ class _NewMessageState extends State<NewMessage> {
     if (_enteredMessage == '') {
       return;
     }
+    _controller.clear();
+
     FocusScope.of(context).unfocus();
     final user = await FirebaseAuth.instance.currentUser;
     final user1Data = await FirebaseFirestore.instance
@@ -228,7 +233,7 @@ class _NewMessageState extends State<NewMessage> {
                   bottom: 10,
                   left: 10,
                   child: FloatingActionButton(
-                    key: Key('ImgDelete'),
+                    key: const Key('ImgDelete'),
                     backgroundColor: Colors.deepOrange,
                     onPressed: () {
                       setState(() {
@@ -242,7 +247,7 @@ class _NewMessageState extends State<NewMessage> {
                   ),
                 ),
                 Positioned(
-                  key: Key('ImgSend'),
+                  key: const Key('ImgSend'),
                   bottom: 10,
                   right: 10,
                   child: FloatingActionButton(
@@ -274,6 +279,7 @@ class _NewMessageState extends State<NewMessage> {
                   ),
                 ),
                 IconButton(
+                  key: const Key('sendTextMsg'),
                   onPressed: () {
                     _enteredMessage.trim().isEmpty ? null : _sendMessage();
                   },

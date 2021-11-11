@@ -67,7 +67,10 @@ class _ContactsState extends State<Contacts> {
                   backgroundImage: NetworkImage(userDocs[i]['image_url']),
                 ),
                 title: Text(userDocs[i]['username']),
-                subtitle: Text(userDocs[i]['email']),
+                subtitle: Text(
+                  userDocs[i]['email'],
+                  overflow: TextOverflow.fade,
+                ),
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(

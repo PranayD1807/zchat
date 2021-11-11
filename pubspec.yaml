@@ -41,6 +41,10 @@ dependencies:
   firebase_storage: ^10.1.0
   # anim_search_bar: ^2.0.2
   material_floating_search_bar: ^0.3.6
+  progressive_image: ^2.0.0
+  image_gallery_saver: ^1.7.1
+  dio: ^4.0.1
+ 
   # flutter_search_bar: ^2.1.0
 
 dev_dependencies:
@@ -70,6 +74,8 @@ flutter:
     - lib/images/img1.jpg
     - lib/images/img2.jpg
     - lib/images/img3.jpg
+    - lib/images/placeholder.jpg
+
 
 
 
