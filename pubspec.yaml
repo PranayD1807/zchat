@@ -44,6 +44,7 @@ dependencies:
   progressive_image: ^2.0.0
   image_gallery_saver: ^1.7.1
   dio: ^4.0.1
+  firebase_messaging: ^11.1.0
  
   # flutter_search_bar: ^2.1.0
 
